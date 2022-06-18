@@ -2,6 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
+
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -11,10 +17,10 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = \App\Models\User::paginate(10);
-        return view('users.index', ['users' => $users]);
+        $users = User::orderBy('id', 'DESC')->paginate(5);
+        return view('users.index', compact('users'))->with('i', ($request->input('page', 1) - 1) * 5);
     }
 
     /**
@@ -24,7 +30,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view("users.create");
+        return view('users.form');
     }
 
     /**
@@ -35,15 +41,15 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $new_user = new \App\Models\User;
+        $new_user = new User;
 
         $new_user->name = $request->get('name');
         $new_user->email = $request->get('email');
-        $new_user->password = \Hash::make($request->get('password'));
-        $new_user->roles = $request->get('status');
+        $new_user->password = Hash::make($request->get('password'));
+        // $new_user->role = $request->get('role');
 
         $new_user->save();
-        return redirect()->route("user.store")->with('status', 'User successfully created');
+        return redirect()->route('user.index')->with('success', 'User successfully created');
     }
 
     /**
@@ -63,11 +69,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(User $user)
     {
-        $user = \App\Models\User::findOrFail($id);
-
-        return view('users.edit', ['user' => $user]);
+        $role = User::pluck('role')->all();
+        return view('users.form', ['user' => $user, 'role' => $role]);
     }
 
     /**
@@ -79,15 +84,17 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $user = \App\Models\User::findOrFail($id);
+        $user = User::findOrFail($id);
 
         $user->name = $request->get('name');
-        // $user->email = $request->get('email');
+        $user->email = $request->get('email');
         // $user->password = \Hash::make($request->get('password'));
-        $user->roles = $request->get('status');
+        $user->no_telp = $request->get('no_telp');
+        $user->is_active = $request->get('is_active');
+        $user->role = $request->get('role');
 
         $user->save();
-        return redirect()->route('user.edit', [$id])->with('status', 'User succesfully updated');
+        return redirect()->route('user.index')->with('toast_success', 'User succesfully updated');
     }
 
     /**
@@ -96,12 +103,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($user)
     {
-        $user = \App\Models\User::findOrFail($id);
-
-        $user->delete();
-
-        return redirect()->route('user.index')->with('status', 'User successfully delete');
+        User::find($user)->delete();
+        return redirect()->route('user.index')
+            ->with('toast_success', 'User deleted successfully');
     }
 }

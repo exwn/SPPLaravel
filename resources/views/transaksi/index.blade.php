@@ -34,7 +34,8 @@
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <a href="{{ route('user.create') }}" class="btn btn-outline-primary">Tambah Pengguna</a>
+                            <a href="{{ route('transaksi.create') }}" class="btn btn-outline-primary">Tambah
+                                Transaksi</a>
                         </div>
                         @if(session('status'))
                         <div class="alert alert-success">
@@ -47,45 +48,36 @@
                             <table class="table table-hover mb-0">
                                 <thead>
                                     <tr>
-                                        <th class="w-1">No.</th>
-                                        <th>Nama</th>
-                                        <th>Email</th>
-                                        <th>Kelas</th>
-                                        <th>Role</th>
-                                        <th>Status</th>
+                                        <th>No.</th>
+                                        <th>Jumlah</th>
+                                        {{-- <th>Periode</th> --}}
                                         <th class="text-center">Action</th>
                                     </tr>
                                 </thead>
 
                                 <tbody>
-                                    @foreach($users as $index => $item)
+
+                                    @foreach ($transaksi as $index => $item)
                                     <tr>
                                         <td>{{ $index+1 }}</td>
-                                        <td>{{ $item->name }}</td>
-                                        <td>{{ $item->email }}</td>
-                                        <td></td>
-                                        {{-- <td>{{ $item->kelas->name }}</td> --}}
-                                        <td>{{ $item->role }}</td>
-                                        <td>@if($item->is_active)
-                                            <span>Aktif</span>
-                                            @else
-                                            <span>Tidak Aktif</span>
-                                            @endif
-                                        </td>
+                                        <td>{{ $item->jumlah }}</td>
+                                        {{-- <td></td> --}}
+                                        {{-- <td>{{ $item->periode->name }}</td> --}}
                                         <td class="text-center">
-                                            <a class="icon" href="{{ route('user.edit', $item->id) }}"
+                                            <a class="icon" href="{{ route('transaksi.edit', $item->id) }}"
                                                 title="edit item"><i data-feather='edit'></i>
                                             </a>
-                                            @if(Auth::user()->id != $item->id)
-                                            {!! Form::open(['method' => 'POST','route' => ['user.destroy',
+
+                                            {!! Form::open(['method' => 'POST','route' => ['transaksi.destroy',
                                             $item->id],'style'=>'display:inline']) !!}
                                             {!! Form::button('<i data-feather="trash-2"></i>', [ 'type'
                                             => 'submit', 'class' => 'btn-link'])
                                             !!}
                                             {!! Form::close() !!}
-                                            @endif
+
                                         </td>
                                     </tr>
+
                                     @endforeach
                                 </tbody>
                             </table>
