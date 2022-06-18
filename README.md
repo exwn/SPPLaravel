@@ -1,4 +1,4 @@
-![Image](https://raw.githubusercontent.com/zuramai/laravel-mazer/main/screenshot.png)
+![Screenshot (995)](https://user-images.githubusercontent.com/74612832/174447197-7b0dc7e1-1843-43b3-88f3-ddaffbcf57e7.png)
 <h1 align="center">Mazer + Laravel Jetstream</h1>
 <p align="center">Mazer is a Admin Dashboard Template that can help you develop faster. We bring Mazer with Laravel starter project. It's completely free and you can use it in your projects.</p>
 
@@ -8,8 +8,8 @@ If you want to check the original template in HTML5 and Bootstrap, [click here](
 ## Installation
 1. Clone this project
     ```bash
-    git clone https://github.com/zuramai/laravel-mazer
-    cd laravel-mazer
+    git clone https://github.com/exwn/SPPLaravel.git
+    cd SPPLaravel
     ```
 2. Install dependencies
     ```bash
@@ -44,7 +44,7 @@ If you want to check the original template in HTML5 and Bootstrap, [click here](
 
 7. Login credentials
 
-**Email:** user@gmail.com
+**Email:** admin@gmail.com
 
 **Password:** password
 ## Contributing
