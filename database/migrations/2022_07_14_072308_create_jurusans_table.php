@@ -13,13 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('periode', function (Blueprint $table) {
-            $table->increments('id');
+        Schema::create('jurusan', function (Blueprint $table) {
+            $table->id();
             $table->string('name');
-            $table->date('tanggal_mulai');
-            $table->date('tanggal_akhir');
             $table->timestamps();
-            $table->softDeletes();
+        });
+
+        Schema::table("pelajar", function (Blueprint $table) {
+            $table->foreign("jurusan_id")->references("id")->on("jurusan");
+            $table->foreign("kelas_id")->references("id")->on("spp");
         });
     }
 
@@ -30,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('periode');
+        Schema::dropIfExists('jurusan');
     }
 };

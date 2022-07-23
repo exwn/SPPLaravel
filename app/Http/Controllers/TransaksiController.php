@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pelajar;
+use App\Models\Spp;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
 
@@ -14,8 +16,10 @@ class TransaksiController extends Controller
      */
     public function index(Request $request)
     {
-        $transaksi = Transaksi::orderBy('id', 'DESC')->paginate(5);
-        return view('transaksi.index', compact('transaksi'))->with('i', ($request->input('page', 1) - 1) * 5);
+        $pelajar = Pelajar::all();
+        $spp = Spp::all();
+        $transaksi = Transaksi::orderBy('id', 'DESC')->paginate(10);
+        return view('transaksi.index', compact('transaksi'), ['pelajar' => $pelajar, 'spp' => $spp])->with('i', ($request->input('page', 1) - 1) * 5);
     }
 
     /**
@@ -37,10 +41,12 @@ class TransaksiController extends Controller
     public function store(Request $request)
     {
         $new_transaksi = new Transaksi;
-        // $new_transaksi->name = $request->get('name');
-        $new_transaksi->jumlah = $request->get('jumlah');
+        $new_transaksi->pelajar_id = $request->get('nama');
+        $new_transaksi->spp_id = $request->get('kelas');
+        $new_transaksi->bulan = $request->get('bulan');
+        $new_transaksi->jumlah_dibayarkan = $request->get('jumlah_dibayarkan');
         $new_transaksi->save();
-        return redirect()->route('transaksi.index')->with('success', 'Transaksi succesfully created');
+        return redirect()->route('transaksi.index')->with('toast_success', 'Transaksi succesfully created');
     }
 
     /**
@@ -62,8 +68,6 @@ class TransaksiController extends Controller
      */
     public function edit(Transaksi $transaksi)
     {
-        // $jumlah = Transaksi::pluck('jumlah')->all();
-        // return view('transaksi.form', ['transaksi' => $transaksi, 'jumlah' => $jumlah]);
         return view('transaksi.form', ['transaksi' => $transaksi]);
     }
 

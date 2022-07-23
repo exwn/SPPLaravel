@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pelajar;
 use App\Models\Spp;
+
 use Illuminate\Http\Request;
 
 class SppController extends Controller
@@ -12,10 +14,13 @@ class SppController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(request $request)
+    public function index(Request $request)
     {
-        $spp = Spp::orderBy('id', 'DESC')->paginate(5);
-        return view('spp.index', compact('spp'))->with('i', ($request->input('page', 1) - 1) * 5);
+        $pelajar = Pelajar::all();
+        return view('spp.index', ['pelajar' => $pelajar]);
+
+        // $spp = Spp::orderBy('id', 'DESC')->paginate();
+        // return view('spp.index', compact('spp'))->with('i', ($request->input('page', 1) - 1) * 5);
     }
 
     /**
@@ -37,21 +42,19 @@ class SppController extends Controller
     public function store(Request $request)
     {
         $new_spp = new Spp;
-        $new_spp->tahun_ajaran = $request->get('tahun_ajaran');
-        $new_spp->kelas = $request->get('kelas');
-        $new_spp->total_tagihan = $request->get('total_tagihan');
-
+        $new_spp->name = $request->get('name');
+        $new_spp->jumlah = $request->get('jumlah');
         $new_spp->save();
-        return redirect()->route('spp.index')->with('toast_success', 'Spp succesfully created');
+        return redirect()->route('spp.index')->with('toast_success', 'Spp successfully created');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Spp  $spp
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Spp $spp)
     {
         //
     }
@@ -59,41 +62,49 @@ class SppController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Spp  $spp
      * @return \Illuminate\Http\Response
      */
-    public function edit(spp $spp)
+    public function edit(Spp $spp)
     {
-        return view('spp.form', ['spp' => $spp]);
+        $jumlah = Spp::pluck('jumlah')->all();
+        return view('spp.form', [
+            'spp' => $spp, 'jumlah' => $jumlah
+        ]);
+
+
+
+        return view('spp.form', [
+            'spp' => $spp
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Models\Spp  $spp
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        $spp = Spp::findOrFail($id);
-        $spp->tahun_ajaran = $request->get('tahun_ajaran');
-        $spp->kelas = $request->get('kelas');
-        $spp->total_tagihan = $request->get('total_tagihan');
-        $spp->save();
-        return redirect()->route('spp.index')->with('toast_success', 'Spp succesfully updated');
+        $update_spp = Spp::findOrFail($id);
+        $update_spp->name = $request->get('name');
+        $update_spp->jumlah = $request->get('jumlah');
+        $update_spp->save();
+        return redirect()->route('spp.index')->with('toast_success', 'Spp successfully update');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Models\Spp  $spp
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         $spp_destroy = Spp::findOrFail($id);
         $spp_destroy->delete();
-        return redirect()->route('spp.index')->with('toast_success', 'Spp deleted succesfully');
+        return redirect()->route('spp.index')->with('toast_success', 'Spp successfully delete');
     }
 }

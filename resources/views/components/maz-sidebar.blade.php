@@ -5,8 +5,10 @@
         <div class="sidebar-header">
             <div class="d-flex justify-content-between">
                 <div class="logo">
-                    <a href="{{ $href }}"><img src="{{ $logo }}" alt="Logo" srcset=""></a>
+                    <a href="{{ $href }}"><img src="{{ $logo }}" alt="Logo" srcset=""
+                            style="width: 70px;height:70px"></a>
                 </div>
+                <p style="font-size: 24px; margin-left:14px; color: #2d499d">SMK Pelita Persada</p>
                 <div class="toggler">
                     <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
                 </div>

@@ -10,8 +10,10 @@ class Spp extends Model
 {
     use SoftDeletes;
     protected $table = 'spp';
-    protected $fillable = [
-        'name',
-        'jumlah'
-    ];
+    protected $guarded = [];
+
+    public function transaksi()
+    {
+        return $this->hasMany(Transaksi::class, 'spp_id', 'id');
+    }
 }

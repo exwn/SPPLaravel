@@ -13,11 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('kelas', function (Blueprint $table) {
-            $table->increments('id');
+        Schema::create('pelajar', function (Blueprint $table) {
+            $table->id();
             $table->string('name');
+            $table->string('no_telp')->nullable();
+            $table->unsignedBigInteger('kelas_id');
+            $table->unsignedBigInteger('jurusan_id');
+            $table->boolean('is_active')->default(1);
+            $table->text('profile_photo_path')->nullable();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -28,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kelas');
+        Schema::dropIfExists('pelajar');
     }
 };

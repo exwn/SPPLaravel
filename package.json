@@ -26,6 +26,7 @@
         "tailwindcss": "^2.0.3"
     },
     "dependencies": {
+        "choices.js": "^10.1.0",
         "feather-icons": "^4.29.0",
         "sweetalert": "^2.1.2"
     }

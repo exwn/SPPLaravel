@@ -9,8 +9,15 @@ use Illuminate\Database\Eloquent\Model;
 class Transaksi extends Model
 {
     use SoftDeletes;
-    protected $table = 'spp_tabungan';
-    protected $fillable = [
-        'jumlah'
-    ];
+    protected $table = 'pelajar_spp';
+    protected $guarded = [];
+
+    public function pelajar()
+    {
+        return $this->belongsTo(Pelajar::class, 'pelajar_id', 'id');
+    }
+    public function spp()
+    {
+        return $this->belongsTo(Spp::class, 'spp_id', 'id');
+    }
 }

@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3>Dashboard</h3>
+                <h3>Manajemen User</h3>
                 <p class="text-subtitle text-muted">This is the main page.</p>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
@@ -20,15 +20,11 @@
             <div class="col-md-6 col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Tambah User</h4>
+                        <h4 class="card-title">{{ (isset($user) ? "Sunting User" :
+                            "Tambahkan User") }}</h4>
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            @if(session('status'))
-                            <div class="alert alert-success">
-                                {{session('status')}}
-                            </div>
-                            @endif
 
                             <form action="{{ (isset($user) ? route('user.update', $user->id) : route('user.create')) }}"
                                 method="POST" class="card">
@@ -78,21 +74,13 @@
                                         <div class="form-group">
                                             <label for="password-vertical">Role</label>
                                             <select class="form-select" id="role" name="role">
-                                                <option value="2" disable hidden>Siswa</option>
+                                                <option value="2" disable hidden>Tata Usaha</option>
                                                 <option value="1" {{ isset($user) ? ($user->role ==
                                                     'Admin' ? 'selected' : '') : '' }}>Admin</option>
                                                 <option value="2" {{ isset($user) ? ($user->role == 'Siswa' ?
-                                                    'selected' : '') : '' }}>Siswa</option>
+                                                    'selected' : '') : '' }}>Tata Usaha</option>
                                             </select>
                                         </div>
-                                    </div>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type='hidden' value='0'
-                                            id="flexSwitchCheckChecked" name="is_active">
-                                        <input class="form-check-input" type="checkbox" value='1'
-                                            id="flexSwitchCheckChecked" name="is_active" {{ isset($user) ?
-                                            ($user->is_active ? 'checked' : '') : '' }}>
-                                        <label class="form-check-label" for="flexSwitchCheckChecked">Aktif</label>
                                     </div>
                                     @endif
                                     <div class="col-12 d-flex justify-content-end">

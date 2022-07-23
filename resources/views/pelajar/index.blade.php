@@ -11,7 +11,7 @@
     <x-slot name="header">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3>Dashboard</h3>
+                <h3>Manajemen Pelajar</h3>
                 <p class="text-subtitle text-muted">This is the main page.</p>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
@@ -24,17 +24,17 @@
         </div>
     </x-slot>
 
-
     <section class="section">
         <div class="row" id="table-hover-row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Hoverable rows</h4>
+                        <h4 class="card-title">Daftar Pelajar</h4>
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <a href="{{ route('periode.create') }}" class="btn btn-outline-primary">Tambah Periode</a>
+                            <a href="{{ route('pelajar.create') }}" class="btn btn-outline-primary">Tambahkan
+                                Pelajar</a>
                         </div>
                         @if(session('status'))
                         <div class="alert alert-success">
@@ -49,31 +49,37 @@
                                     <tr>
                                         <th class="w-1">No.</th>
                                         <th>Nama</th>
-                                        <th>Tanggal Mulai</th>
-                                        <th>Tanggal Akhir</th>
+                                        <th>Kelas</th>
+                                        <th>Jurusan</th>
+                                        <th>No. Telepon</th>
+                                        <th>Status</th>
                                         <th class="text-center">Action</th>
                                     </tr>
                                 </thead>
 
                                 <tbody>
-                                    @foreach($periode as $index => $item)
+                                    @foreach($pelajar as $index => $item)
                                     <tr>
                                         <td>{{ $index+1 }}</td>
                                         <td>{{ $item->name }}</td>
-                                        <td>{{ $item->tanggal_mulai }}</td>
-                                        <td>{{ $item->tanggal_akhir }}</td>
+                                        <td>{{ $item->spp->kelas }}</td>
+                                        <td>{{ $item->jurusan->name }}</td>
+                                        <td>{{ $item->no_telp }}</td>
+                                        <td>@if($item->is_active)
+                                            <span>Aktif</span>
+                                            @else
+                                            <span>Tidak Aktif</span>
+                                            @endif
+                                        </td>
                                         <td class="text-center">
-                                            <a class="icon" href="{{ route('periode.edit', $item->id) }}"
+                                            <a class="icon" href="{{ route('pelajar.edit', $item->id) }}"
                                                 title="edit item"><i data-feather='edit'></i>
                                             </a>
-                                            {{-- @if(Auth::user()->id != $item->id) --}}
-                                            {!! Form::open(['method' => 'POST','route' => ['periode.destroy',
+                                            {!! Form::open(['method' => 'POST','route' => ['pelajar.destroy',
                                             $item->id],'style'=>'display:inline']) !!}
                                             {!! Form::button('<i data-feather="trash-2"></i>', [ 'type'
-                                            => 'submit', 'class' => 'btn-link'])
-                                            !!}
+                                            => 'submit', 'class' => 'btn-link']) !!}
                                             {!! Form::close() !!}
-                                            {{-- @endif --}}
                                         </td>
                                     </tr>
                                     @endforeach
@@ -85,4 +91,5 @@
             </div>
         </div>
     </section>
+
 </x-app-layout>

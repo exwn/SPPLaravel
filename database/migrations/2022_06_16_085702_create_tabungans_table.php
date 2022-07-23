@@ -24,13 +24,13 @@ return new class extends Migration
             $table->softDeletes();
         });
 
-        Schema::create('spp_tabungan', function (Blueprint $table) {
-            $table->increments('id');
-            $table->double('jumlah');
-            $table->boolean('is_lunas')->default(0);
-            $table->timestamps();
-            $table->softDeletes();
-        });
+        // Schema::create('spp_tabungan', function (Blueprint $table) {
+        //     $table->increments('id');
+        //     $table->double('jumlah');
+        //     $table->boolean('is_lunas')->default(0);
+        //     $table->timestamps();
+        //     $table->softDeletes();
+        // });
     }
 
     /**

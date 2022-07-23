@@ -49,7 +49,7 @@ class UserController extends Controller
         // $new_user->role = $request->get('role');
 
         $new_user->save();
-        return redirect()->route('user.index')->with('success', 'User successfully created');
+        return redirect()->route('user.index')->with('toast_success', 'User successfully created');
     }
 
     /**
@@ -90,7 +90,6 @@ class UserController extends Controller
         $user->email = $request->get('email');
         // $user->password = \Hash::make($request->get('password'));
         $user->no_telp = $request->get('no_telp');
-        $user->is_active = $request->get('is_active');
         $user->role = $request->get('role');
 
         $user->save();

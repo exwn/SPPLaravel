@@ -10,6 +10,7 @@
 
     <!-- Styles -->
     @include('layouts.partials.styles')
+
 </head>
 
 <body>

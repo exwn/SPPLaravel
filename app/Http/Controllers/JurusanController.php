@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Spp;
+use App\Models\Jurusan;
 use Illuminate\Http\Request;
 
-class SppController extends Controller
+class JurusanController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(request $request)
+    public function index(Request $request)
     {
-        $spp = Spp::orderBy('id', 'DESC')->paginate(5);
-        return view('spp.index', compact('spp'))->with('i', ($request->input('page', 1) - 1) * 5);
+        $jurusan = Jurusan::orderBy('id', 'DESC')->paginate(100);
+        return view('jurusan.index', compact('jurusan'))->with('i', ($request->input('page', 1) - 1) * 5);
     }
 
     /**
@@ -25,7 +25,7 @@ class SppController extends Controller
      */
     public function create()
     {
-        return view('spp.form');
+        return view('jurusan.form');
     }
 
     /**
@@ -36,13 +36,12 @@ class SppController extends Controller
      */
     public function store(Request $request)
     {
-        $new_spp = new Spp;
-        $new_spp->tahun_ajaran = $request->get('tahun_ajaran');
-        $new_spp->kelas = $request->get('kelas');
-        $new_spp->total_tagihan = $request->get('total_tagihan');
 
-        $new_spp->save();
-        return redirect()->route('spp.index')->with('toast_success', 'Spp succesfully created');
+        $new_jurusan = new jurusan;
+
+        $new_jurusan->name = $request->get('name');
+        $new_jurusan->save();
+        return redirect()->route('jurusan.index')->with('toast_success', 'jurusan successfully created');
     }
 
     /**
@@ -62,9 +61,11 @@ class SppController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(spp $spp)
+    public function edit(Jurusan $jurusan)
     {
-        return view('spp.form', ['spp' => $spp]);
+        return view('jurusan.form', [
+            'jurusan' => $jurusan
+        ]);
     }
 
     /**
@@ -76,12 +77,10 @@ class SppController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $spp = Spp::findOrFail($id);
-        $spp->tahun_ajaran = $request->get('tahun_ajaran');
-        $spp->kelas = $request->get('kelas');
-        $spp->total_tagihan = $request->get('total_tagihan');
-        $spp->save();
-        return redirect()->route('spp.index')->with('toast_success', 'Spp succesfully updated');
+        $update_jurusan = Jurusan::findOrFail($id);
+        $update_jurusan->name = $request->get('name');
+        $update_jurusan->save();
+        return redirect()->route('jurusan.index')->with('toast_success', 'jurusan successfully update');
     }
 
     /**
@@ -92,8 +91,8 @@ class SppController extends Controller
      */
     public function destroy($id)
     {
-        $spp_destroy = Spp::findOrFail($id);
-        $spp_destroy->delete();
-        return redirect()->route('spp.index')->with('toast_success', 'Spp deleted succesfully');
+        $jurusan_destroy = Jurusan::findOrFail($id);
+        $jurusan_destroy->delete();
+        return redirect()->route('jurusan.index')->with('toast_success', 'jurusan successfully delete');
     }
 }

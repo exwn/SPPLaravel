@@ -20,12 +20,8 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-            $table->enum('role', ['Admin', 'Siswa'])->default("Siswa");
+            $table->enum('role', ['Admin', 'Tata Usaha'])->default("Tata Usaha");
             $table->string('no_telp')->nullable();
-            $table->string('bukti_pembayaran')->nullable();
-            $table->boolean('is_active')->default(1);
-            $table->unsignedInteger('kelas_id')->nullable();
-            $table->foreignId('current_team_id')->nullable();
             $table->text('profile_photo_path')->nullable();
             $table->timestamps();
         });
