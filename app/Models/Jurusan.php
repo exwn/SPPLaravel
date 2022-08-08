@@ -11,8 +11,8 @@ class Jurusan extends Model
     protected $table = 'jurusan';
     protected $guarded = [];
 
-    public function pelajar()
+    public function user()
     {
-        return $this->hasMany(Pelajar::class, 'jurusan_id', 'id');
+        return $this->hasMany(User::class, 'jurusan_id', 'id');
     }
 }

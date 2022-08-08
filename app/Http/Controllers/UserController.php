@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Jurusan;
+use App\Models\Role;
+use App\Models\Spp;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -19,8 +22,13 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = User::orderBy('id', 'DESC')->paginate(5);
-        return view('users.index', compact('users'))->with('i', ($request->input('page', 1) - 1) * 5);
+        $role = Role::all();
+        $kelas = Spp::all();
+        $jurusan = Jurusan::all();
+        $users = User::whereIn('role_id', [1, 2])->orderBy('id', 'DESC')->paginate(10);
+        return view('users.index', ['users' => $users, 'role' => $role, 'kelas' => $kelas, 'jurusan' => $jurusan]);
+
+        // var_dump($model->name);
     }
 
     /**
@@ -30,7 +38,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('users.form');
+        $role = Role::all();
+        return view('users.form', ['role' => $role]);
     }
 
     /**
@@ -46,7 +55,8 @@ class UserController extends Controller
         $new_user->name = $request->get('name');
         $new_user->email = $request->get('email');
         $new_user->password = Hash::make($request->get('password'));
-        // $new_user->role = $request->get('role');
+        $new_user->role_id = $request->get('role');
+        $new_user->no_telp = $request->get('no_telp');
 
         $new_user->save();
         return redirect()->route('user.index')->with('toast_success', 'User successfully created');
@@ -58,9 +68,11 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(user $user)
     {
-        //
+        return response()->json(
+            $user
+        );
     }
 
     /**
@@ -71,7 +83,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $role = User::pluck('role')->all();
+        $role = Role::all();
         return view('users.form', ['user' => $user, 'role' => $role]);
     }
 
@@ -90,7 +102,7 @@ class UserController extends Controller
         $user->email = $request->get('email');
         // $user->password = \Hash::make($request->get('password'));
         $user->no_telp = $request->get('no_telp');
-        $user->role = $request->get('role');
+        $user->role_id = $request->get('role');
 
         $user->save();
         return redirect()->route('user.index')->with('toast_success', 'User succesfully updated');

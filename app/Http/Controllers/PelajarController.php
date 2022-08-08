@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Jurusan;
 use App\Models\Pelajar;
+use App\Models\Role;
 use App\Models\Spp;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class PelajarController extends Controller
 {
@@ -16,10 +19,11 @@ class PelajarController extends Controller
      */
     public function index(Request $request)
     {
+        // $role = Role::all();
         $spp = Spp::all();
         $jurusan = Jurusan::all();
-        $pelajar = Pelajar::orderBy('id', 'DESC')->paginate(100);
-        return view('pelajar.index', compact('pelajar'), ['jurusan' => $jurusan], ['spp' => $spp])->with('i', ($request->input('page', 1) - 1) * 5);
+        $pelajar = User::where('role_id', 3)->orderBy('id', 'DESC')->paginate(10);
+        return view('pelajar.index', ['pelajar' => $pelajar, 'jurusan' => $jurusan, 'spp' => $spp])->with('i', ($request->input('page', 1) - 1) * 5);
     }
 
     /**
@@ -42,11 +46,14 @@ class PelajarController extends Controller
      */
     public function store(Request $request)
     {
-        $new_pelajar = new Pelajar;
+        $new_pelajar = new User;
         $new_pelajar->name = $request->get('name');
+        $new_pelajar->email = $request->get('email');
+        $new_pelajar->password = Hash::make($request->get('password'));
         $new_pelajar->no_telp = $request->get('no_telp');
-        $new_pelajar->jurusan_id = $request->get('jurusan');
+        $new_pelajar->role_id = 3;
         $new_pelajar->kelas_id = $request->get('kelas');
+        $new_pelajar->jurusan_id = $request->get('jurusan');
         $new_pelajar->save();
         return redirect()->route('pelajar.index')->with('toast_success', 'Pelajar succesfully created');
     }
@@ -57,24 +64,25 @@ class PelajarController extends Controller
      * @param  \App\Models\pelajar  $pelajar
      * @return \Illuminate\Http\Response
      */
-    public function show(pelajar $pelajar)
+    public function show(user $user)
     {
         return response()->json(
-            $pelajar
+            $user
         );
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\pelajar  $pelajar
+     * @param  int  $user
      * @return \Illuminate\Http\Response
      */
-    public function edit(pelajar $pelajar)
+    public function edit(User $user)
     {
         $spp = Spp::all();
         $jurusan = Jurusan::all();
-        return view('pelajar.form', ['pelajar' => $pelajar, 'spp' => $spp, 'jurusan' => $jurusan]);
+        // $role = Role::all();
+        return view('pelajar.form', ['user' => $user, 'spp' => $spp, 'jurusan' => $jurusan]);
     }
 
     /**
@@ -86,13 +94,16 @@ class PelajarController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $pelajar = Pelajar::findOrFail($id);
+        $pelajar = User::findOrFail($id);
 
         $pelajar->name = $request->get('name');
+        $pelajar->email = $request->get('email');
+        $pelajar->password = Hash::make($request->get('password'));
         $pelajar->no_telp = $request->get('no_telp');
-        $pelajar->is_active = $request->get('is_active');
-        $pelajar->jurusan_id = $request->get('jurusan');
+        // $pelajar->role_id = $request->get('role');
         $pelajar->kelas_id = $request->get('kelas');
+        $pelajar->jurusan_id = $request->get('jurusan');
+        $pelajar->is_active = $request->get('is_active');
 
         $pelajar->save();
         return redirect()->route('pelajar.index')->with('toast_success', 'Pelajar succesfully updated');
@@ -104,9 +115,9 @@ class PelajarController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($pelajar)
+    public function destroy($user)
     {
-        Pelajar::find($pelajar)->delete();
+        User::find($user)->delete();
         return redirect()->route('pelajar.index')
             ->with('toast_success', 'Pelajar deleted successfully');
     }

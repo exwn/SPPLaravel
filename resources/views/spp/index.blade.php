@@ -60,7 +60,7 @@
                                     @foreach ($spp as $index => $item)
                                     <tr>
                                         <td>{{ $index+1 }}</td>
-                                        <td>{{ $item->tahun_ajaran }}</td>
+                                        <td>{{ $item->tahun_ajaran }}/{{ $item->tahun_ajaran+1 }}</td>
                                         <td>{{ $item->kelas }}</td>
                                         <td>{{ $item->total_tagihan }}</td>
                                         <td class="text-center">

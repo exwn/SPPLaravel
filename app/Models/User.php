@@ -25,6 +25,7 @@ class User extends Authenticatable
      */
     protected $guarded = [];
 
+
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -51,7 +52,36 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $appends = [
-        'profile_photo_url',
-    ];
+    protected $appends = ['jurusan_name', 'spp_kelas', 'spp_tagihan', 'profile_photo_url'];
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id', 'id');
+    }
+    public function spp()
+    {
+        return $this->belongsTo(Spp::class, 'kelas_id', 'id');
+    }
+    public function jurusan()
+    {
+        return $this->belongsTo(Jurusan::class, 'jurusan_id', 'id');
+    }
+
+    public function transaksi()
+    {
+        return $this->hasMany(Transaksi::class, 'users_id', 'id');
+    }
+
+    public function getJurusanNameAttribute()
+    {
+        return "{$this->jurusan->name}";
+    }
+    public function getSppKelasAttribute()
+    {
+        return "{$this->spp->id}";
+    }
+    public function getSppTagihanAttribute()
+    {
+        return "{$this->spp->total_tagihan}";
+    }
 }

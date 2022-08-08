@@ -24,7 +24,7 @@
         </div>
     </x-slot>
 
-
+    {{-- {{ dd(auth::check()) }} --}}
     <section class="section">
         <div class="row" id="table-hover-row">
             <div class="col-12">
@@ -62,7 +62,7 @@
                                             {!! Form::open(['method' => 'POST','route' => ['jurusan.destroy',
                                             $item->id],'style'=>'display:inline']) !!}
                                             {!! Form::button('<i data-feather="trash-2"></i>', [ 'type'
-                                            => 'submit', 'class' => 'btn-link'])
+                                            => 'submit', 'class' => 'btn-link show-confirm'])
                                             !!}
                                             {!! Form::close() !!}
 
@@ -79,3 +79,19 @@
         </div>
     </section>
 </x-app-layout>
+<script>
+    $('.show-confirm').on('click', function (event) {
+    event.preventDefault();
+    var form =  $(this).closest("form");
+    swal({
+        title: 'Are you sure?',
+        text: 'This record and it`s details will be permanantly deleted!',
+        icon: 'warning',
+        buttons: ["Cancel", "Yes!"],
+    }).then(function(value) {
+        if (value) {
+            form.submit();
+        }
+    });
+});
+</script>

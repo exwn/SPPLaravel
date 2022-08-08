@@ -50,14 +50,14 @@
                                         <th class="text-center">Action</th>
                                     </tr>
                                 </thead>
-
+                                {{-- {{ dd($role) }} --}}
                                 <tbody>
                                     @foreach($users as $index => $item)
                                     <tr>
                                         <td>{{ $index+1 }}</td>
                                         <td>{{ $item->name }}</td>
                                         <td>{{ $item->email }}</td>
-                                        <td>{{ $item->role }}</td>
+                                        <td>{{ $item->role->name }}</td>
                                         <td>@if($item->is_active)
                                             <span>Aktif</span>
                                             @else
@@ -72,7 +72,7 @@
                                             {!! Form::open(['method' => 'POST','route' => ['user.destroy',
                                             $item->id],'style'=>'display:inline']) !!}
                                             {!! Form::button('<i data-feather="trash-2"></i>', [ 'type'
-                                            => 'submit', 'class' => 'btn-link'])
+                                            => 'submit', 'class' => 'btn-link show-confirm'])
                                             !!}
                                             {!! Form::close() !!}
                                             @endif
@@ -85,6 +85,24 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </section>
 </x-app-layout>
+
+<script>
+    $('.show-confirm').on('click', function (event) {
+    event.preventDefault();
+    var form =  $(this).closest("form");
+    swal({
+        title: 'Are you sure?',
+        text: 'This record and it`s details will be permanantly deleted!',
+        icon: 'warning',
+        buttons: ["Cancel", "Yes!"],
+    }).then(function(value) {
+        if (value) {
+            form.submit();
+        }
+    });
+});
+</script>

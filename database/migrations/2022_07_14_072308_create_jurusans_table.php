@@ -19,9 +19,10 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::table("pelajar", function (Blueprint $table) {
+        Schema::table("users", function (Blueprint $table) {
             $table->foreign("jurusan_id")->references("id")->on("jurusan");
             $table->foreign("kelas_id")->references("id")->on("spp");
+            $table->foreign("role_id")->references("id")->on("roles");
         });
     }
 

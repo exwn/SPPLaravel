@@ -45,6 +45,21 @@
                                                 <input type="text" class="form-control form-control" name="kelas"
                                                     placeholder="Masukkan Kelas"
                                                     value="{{ isset($spp) ? $spp->kelas : old('kelas') }}">
+                                                {{-- <select class="form-select" id="kelas" name="kelas">
+                                                    <option disable hidden>-- Pilih Kelas --</option>
+                                                    <option value="10">Kelas 10</option>
+                                                    <option value="11">Kelas 11</option>
+                                                    <option value="12">Kelas 12</option> --}}
+                                                    {{-- <option value="10" {{ isset($spp) ? ($spp->kelas : old('kelas')
+                                                        ? 'selected' : '') : '' }}>Kelas 10
+                                                    </option>
+                                                    <option value="11" {{ isset($spp) ? ($spp->kelas : old('kelas')
+                                                        ? 'selected' : '') : '' }}>Kelas 11
+                                                    </option>
+                                                    <option value="12" {{ isset($spp) ? ($spp->kelas : old('kelas')
+                                                        ? 'selected' : '') : '' }}>Kelas 12
+                                                    </option> --}}
+                                                </select>
                                             </div>
                                         </div>
                                         <div class="col-12">

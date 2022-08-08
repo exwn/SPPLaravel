@@ -14,12 +14,11 @@ class Role
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next, $role)
+    public function handle(Request $request, Closure $next, ...$role)
     {
-        if ($request->user()->role === $role) {
+        if ($request->user()->role()->where('id', '=', $role)->exists()) {
             return $next($request);
-        }
-        // return redirect()->to(route('login'));
+        };
         abort(403);
     }
 }

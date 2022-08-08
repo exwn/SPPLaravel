@@ -91,6 +91,9 @@ class JurusanController extends Controller
      */
     public function destroy($id)
     {
+        // return response()->json(
+        //     $id
+        // );
         $jurusan_destroy = Jurusan::findOrFail($id);
         $jurusan_destroy->delete();
         return redirect()->route('jurusan.index')->with('toast_success', 'jurusan successfully delete');

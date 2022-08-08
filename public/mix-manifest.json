@@ -1,5 +1,6 @@
 {
     "/js/app.js": "/js/app.js",
+    "/css/pages/filepond.css": "/css/pages/filepond.css",
     "/css/tailwind.css": "/css/tailwind.css",
     "/css/pages/auth.css": "/css/pages/auth.css",
     "/css/app.css": "/css/app.css",

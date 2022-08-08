@@ -59,7 +59,7 @@
                                         </div>
                                         @endif
                                     </div>
-                                    @if(isset($user))
+                                    {{-- @if(isset($user)) --}}
                                     <div class="col-12">
                                         <div class="form-group">
                                             <label for="no-telepon">No. Telepon</label>
@@ -75,14 +75,21 @@
                                             <label for="password-vertical">Role</label>
                                             <select class="form-select" id="role" name="role">
                                                 <option value="2" disable hidden>Tata Usaha</option>
-                                                <option value="1" {{ isset($user) ? ($user->role ==
+                                                @foreach ($role as $item)
+                                                <option value="{{ $item->id }}" {{ isset($user) ? ($item->id ==
+                                                    $user->role_id ? 'selected' : '') : '' }}>{{ $item->name
+                                                    }}
+                                                </option>
+                                                @endforeach
+                                                {{-- {{ dd($user) }} --}}
+                                                {{-- <option value="1" {{ isset($user) ? ($user->role ==
                                                     'Admin' ? 'selected' : '') : '' }}>Admin</option>
                                                 <option value="2" {{ isset($user) ? ($user->role == 'Siswa' ?
-                                                    'selected' : '') : '' }}>Tata Usaha</option>
+                                                    'selected' : '') : '' }}>Tata Usaha</option> --}}
                                             </select>
                                         </div>
                                     </div>
-                                    @endif
+                                    {{-- @endif --}}
                                     <div class="col-12 d-flex justify-content-end">
                                         <button type="submit" class="btn btn-primary me-1 mb-1"
                                             value="save">Submit</button>
