@@ -1,6 +1,6 @@
 {
     "name": "laravel/laravel",
-    "type": "project",
+    "type": "build 3.0",
     "description": "The Laravel Framework.",
     "keywords": [
         "framework",
