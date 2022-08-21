@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Charts\TransaksiChart;
+use App\Models\Transaksi;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -21,8 +24,20 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index(TransaksiChart $chart)
     {
-        return view('dashboard');
+        // $jurusan = Jurusan::get('name');
+        $lunas = Transaksi::where('status', 1)->count();
+        $total_uang = Transaksi::sum('jumlah_dibayarkan');
+        $transaksi = Transaksi::count();
+        $pelajar = User::where('role_id', 3)->count();
+        return view('dashboard', [
+            'chart' => $chart->build(),
+            'pelajar' => $pelajar,
+            'transaksi' => $transaksi,
+            'total_uang' => $total_uang,
+            'lunas' => $lunas,
+            // 'jurusan' => $jurusan
+        ]);
     }
 }
