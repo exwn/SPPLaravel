@@ -23,6 +23,7 @@
                         <h4 class="card-title">{{ isset($jurusan) ? "Sunting Jurusan" : "Tambahkan Jurusan" }}</h4>
                     </div>
                     <div class="card-content">
+                        @include('flash-message')
                         <div class="card-body">
                             <form class="row needs-validation g-3 p-3" novalidate
                                 action="{{ isset($jurusan) ? route('jurusan.update', $jurusan->id) : route('jurusan.create') }}"

@@ -24,7 +24,6 @@
         </div>
     </x-slot>
 
-    {{-- {{ dd(auth::check()) }} --}}
     <section class="section">
         <div class="row" id="table-hover-row">
             <div class="col-12">
@@ -37,8 +36,11 @@
                             <a href="{{ route('jurusan.create') }}" class="btn btn-outline-primary">Tambahkan
                                 Jurusan</a>
                         </div>
+
+                        @include('flash-message')
+
                         <!-- table hover -->
-                        <div class="table-responsive">
+                        <div class="table-responsive mx-4 mb-4">
                             <table class="table table-hover mb-0">
                                 <thead>
                                     <tr>
@@ -49,22 +51,21 @@
                                 </thead>
 
                                 <tbody>
-
                                     @foreach ($jurusan as $index => $item)
                                     <tr>
-                                        <td>{{ $index+1 }}</td>
+                                        <td class="text-muted">{{ $index+1 }}</td>
                                         <td>{{ $item->name }}</td>
                                         <td class="text-center">
                                             <a class="icon" href="{{ route('jurusan.edit', $item->id) }}"
                                                 title="edit item"><i data-feather='edit'></i>
                                             </a>
 
-                                            {!! Form::open(['method' => 'POST','route' => ['jurusan.destroy',
+                                            {{-- {!! Form::open(['method' => 'POST','route' => ['jurusan.destroy',
                                             $item->id],'style'=>'display:inline']) !!}
                                             {!! Form::button('<i data-feather="trash-2"></i>', [ 'type'
-                                            => 'submit', 'class' => 'btn-link show-confirm'])
+                                            => 'submit', 'class' => 'btn-link'])
                                             !!}
-                                            {!! Form::close() !!}
+                                            {!! Form::close() !!} --}}
 
                                         </td>
                                     </tr>
@@ -80,18 +81,28 @@
     </section>
 </x-app-layout>
 <script>
-    $('.show-confirm').on('click', function (event) {
-    event.preventDefault();
-    var form =  $(this).closest("form");
-    swal({
-        title: 'Are you sure?',
-        text: 'This record and it`s details will be permanantly deleted!',
+    $('.btn-link').on('click', function (event) {
+        event.preventDefault();
+        var form =  $(this).closest("form");
+        Swal.fire({
+        title: 'Anda yakin ingin menghapus?',
+        text: 'Jurusan yang dihapus tidak dapat dikembalikan',
         icon: 'warning',
-        buttons: ["Cancel", "Yes!"],
-    }).then(function(value) {
-        if (value) {
-            form.submit();
-        }
+        showCancelButton: true,
+        confirmButtonText: 'Yaa, hapus jurusan!',
+        cancelButtonText: 'Batal',
+        }).then((result) => {
+            setTimeout(() => {
+
+                if (result.isConfirmed) {
+                    form.submit();
+                    Swal.fire(
+                        'Terhapus!',
+                        'Jurusan sudah terhapus.',
+                        'success'
+                        )
+                }
+            }, 1500);
+        })
     });
-});
 </script>

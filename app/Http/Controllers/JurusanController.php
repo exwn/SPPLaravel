@@ -14,7 +14,7 @@ class JurusanController extends Controller
      */
     public function index(Request $request)
     {
-        $jurusan = Jurusan::orderBy('id', 'DESC')->paginate(100);
+        $jurusan = Jurusan::orderBy('id', 'ASC')->get();
         return view('jurusan.index', compact('jurusan'))->with('i', ($request->input('page', 1) - 1) * 5);
     }
 
@@ -36,12 +36,15 @@ class JurusanController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required|unique:jurusan|max:255'
+        ]);
 
         $new_jurusan = new jurusan;
 
         $new_jurusan->name = $request->get('name');
         $new_jurusan->save();
-        return redirect()->route('jurusan.index')->with('toast_success', 'jurusan successfully created');
+        return redirect()->route('jurusan.index')->with('success', 'Jurusan berhasil ditambahkan');
     }
 
     /**
@@ -77,10 +80,14 @@ class JurusanController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'name' => 'required|unique:jurusan|max:255'
+        ]);
+
         $update_jurusan = Jurusan::findOrFail($id);
         $update_jurusan->name = $request->get('name');
         $update_jurusan->save();
-        return redirect()->route('jurusan.index')->with('toast_success', 'jurusan successfully update');
+        return redirect()->route('jurusan.index')->with('success', 'Jurusan berhasil diperbarui');
     }
 
     /**
@@ -91,11 +98,8 @@ class JurusanController extends Controller
      */
     public function destroy($id)
     {
-        // return response()->json(
-        //     $id
-        // );
         $jurusan_destroy = Jurusan::findOrFail($id);
         $jurusan_destroy->delete();
-        return redirect()->route('jurusan.index')->with('toast_success', 'jurusan successfully delete');
+        return redirect()->route('jurusan.index')->with('success', 'Jurusan successfully delete');
     }
 }
