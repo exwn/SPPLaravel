@@ -1,6 +1,6 @@
 {
     "name": "laravel/laravel",
-    "type": "build 3.0",
+    "type": "project",
     "description": "The Laravel Framework.",
     "keywords": [
         "framework",
@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
+        "arielmejiadev/larapex-charts": "^4.1",
         "barryvdh/laravel-dompdf": "^2.0",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
@@ -40,6 +41,9 @@
         }
     },
     "autoload": {
+        "files": [
+            "app/View/Components/Helpers.php"
+        ],
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
