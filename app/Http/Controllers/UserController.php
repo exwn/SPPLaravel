@@ -8,9 +8,6 @@ use App\Models\Spp;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
-
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -25,10 +22,8 @@ class UserController extends Controller
         $role = Role::all();
         $kelas = Spp::all();
         $jurusan = Jurusan::all();
-        $users = User::whereIn('role_id', [1, 2])->orderBy('id', 'DESC')->paginate(10);
-        return view('users.index', ['users' => $users, 'role' => $role, 'kelas' => $kelas, 'jurusan' => $jurusan]);
-
-        // var_dump($model->name);
+        $users = User::whereIn('role_id', [1, 2])->orderBy('id', 'ASC')->get();
+        return view('users.index', ['users' => $users, 'role' => $role, 'kelas' => $kelas, 'jurusan' => $jurusan])->with('i', ($request->input('page', 1) - 1) * 5);
     }
 
     /**
@@ -50,8 +45,15 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $new_user = new User;
+        $request->validate([
+            'name' => 'required|max:255|unique:users,name',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:8',
+            'no_telp' => 'unique:users',
+            // 'role' => 'required|in:1,2,3'
+        ]);
 
+        $new_user = new User;
         $new_user->name = $request->get('name');
         $new_user->email = $request->get('email');
         $new_user->password = Hash::make($request->get('password'));
@@ -59,7 +61,7 @@ class UserController extends Controller
         $new_user->no_telp = $request->get('no_telp');
 
         $new_user->save();
-        return redirect()->route('user.index')->with('toast_success', 'User successfully created');
+        return redirect()->route('user.index')->with('success', 'User berhasil ditambahkan!');
     }
 
     /**
@@ -70,9 +72,7 @@ class UserController extends Controller
      */
     public function show(user $user)
     {
-        return response()->json(
-            $user
-        );
+        //
     }
 
     /**
@@ -98,14 +98,26 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
+        $request->validate([
+            'name' => 'required|max:255|unique:users,name,' . $user->id,
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|min:8',
+            'no_telp' => 'unique:users,no_telp,' . $user->id,
+            // 'role' => 'required|in:1,2,3'
+        ]);
+
         $user->name = $request->get('name');
         $user->email = $request->get('email');
-        // $user->password = \Hash::make($request->get('password'));
+        if ($request->password != null) {
+            $user->password = Hash::make($request->get('password'));
+        } else {
+            $user->password = $request->except('password');
+        };
         $user->no_telp = $request->get('no_telp');
         $user->role_id = $request->get('role');
 
         $user->save();
-        return redirect()->route('user.index')->with('toast_success', 'User succesfully updated');
+        return redirect()->route('user.index')->with('success', 'User berhasil diperbarui');
     }
 
     /**
@@ -114,10 +126,11 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($user)
+    public function destroy($id)
     {
-        User::find($user)->delete();
+        $user_destroy = User::findOrFail($id);
+        $user_destroy->delete();
         return redirect()->route('user.index')
-            ->with('toast_success', 'User deleted successfully');
+            ->with('success', 'User berhasil dihapus');
     }
 }

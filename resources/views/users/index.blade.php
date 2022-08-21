@@ -37,9 +37,11 @@
                             <a href="{{ route('user.create') }}" class="btn btn-outline-primary">Tambahkan User</a>
                         </div>
 
+                        @include('flash-message')
+
                         <!-- table hover -->
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0">
+                        <div class="table-responsive mx-4 mb-4">
+                            <table class="table table-hover" id="table">
                                 <thead>
                                     <tr>
                                         <th class="w-1">No.</th>
@@ -50,11 +52,11 @@
                                         <th class="text-center">Action</th>
                                     </tr>
                                 </thead>
-                                {{-- {{ dd($role) }} --}}
+
                                 <tbody>
                                     @foreach($users as $index => $item)
                                     <tr>
-                                        <td>{{ $index+1 }}</td>
+                                        <td class="text-muted">{{ $index+1 }}</td>
                                         <td>{{ $item->name }}</td>
                                         <td>{{ $item->email }}</td>
                                         <td>{{ $item->role->name }}</td>
@@ -72,7 +74,7 @@
                                             {!! Form::open(['method' => 'POST','route' => ['user.destroy',
                                             $item->id],'style'=>'display:inline']) !!}
                                             {!! Form::button('<i data-feather="trash-2"></i>', [ 'type'
-                                            => 'submit', 'class' => 'btn-link show-confirm'])
+                                            => 'submit', 'class' => 'btn-link'])
                                             !!}
                                             {!! Form::close() !!}
                                             @endif
@@ -82,6 +84,7 @@
                                 </tbody>
                             </table>
                         </div>
+                        {{-- {{ $users->links() }} --}}
                     </div>
                 </div>
             </div>
@@ -91,18 +94,68 @@
 </x-app-layout>
 
 <script>
-    $('.show-confirm').on('click', function (event) {
-    event.preventDefault();
-    var form =  $(this).closest("form");
-    swal({
-        title: 'Are you sure?',
-        text: 'This record and it`s details will be permanantly deleted!',
+    $('.btn-link').on('click', function (event) {
+        event.preventDefault();
+        var form =  $(this).closest("form");
+        Swal.fire({
+        title: 'Anda yakin ingin menghapus?',
+        text: 'User yang dihapus tidak dapat dikembalikan',
         icon: 'warning',
-        buttons: ["Cancel", "Yes!"],
-    }).then(function(value) {
-        if (value) {
-            form.submit();
-        }
+        showCancelButton: true,
+        confirmButtonText: 'Yaa, hapus user!',
+        cancelButtonText: 'Batal',
+        }).then((result) => {
+            setTimeout(() => {
+
+                if (result.isConfirmed) {
+                    form.submit();
+                    // const Toast = Swal.mixin({
+                    //   toast: true,
+                    //   position: 'top-end',
+                    //   showConfirmButton: false,
+                    //   timer: 3000,
+                    //   timerProgressBar: true,
+                    //   didOpen: (toast) => {
+                    //     toast.addEventListener('mouseenter', Swal.stopTimer)
+                    //     toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    //   }
+                    // })
+                    // Toast.fire({
+                    //   icon: 'success',
+                    //   title: 'User sudah terhapus.'
+                    // })
+                    Swal.fire(
+                        'Terhapus!',
+                        'User sudah terhapus.',
+                        'success'
+                        )
+                }
+            }, 1500);
+        })
     });
-});
+    $(document).ready(function () {
+    $('#table').DataTable();
+    });
 </script>
+{{-- <script>
+    $('#show-confirm').on('click', function (event) {
+        event.preventDefault();
+    var form =  $(this).closest("form");
+    const Toast = Swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer)
+    toast.addEventListener('mouseleave', Swal.resumeTimer)
+  }
+})
+
+Toast.fire({
+  icon: 'success',
+  title: 'Signed in successfully'
+})
+    });
+</script> --}}

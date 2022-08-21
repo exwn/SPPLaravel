@@ -24,8 +24,8 @@
                             "Tambahkan User") }}</h4>
                     </div>
                     <div class="card-content">
+                        @include('flash-message')
                         <div class="card-body">
-
                             <form action="{{ (isset($user) ? route('user.update', $user->id) : route('user.create')) }}"
                                 method="POST" class="card">
                                 <div class="form-body">
@@ -47,19 +47,17 @@
                                                     value="{{ isset($user) ? $user->email : old('email') }}" required>
                                             </div>
                                         </div>
-                                        @if(!isset($user))
+                                        {{-- @if(!isset($user)) --}}
                                         <div class="col-12">
                                             <div class="form-group">
                                                 <label for="password-vertical">Password</label>
                                                 <input type="password" id="password-vertical" class="form-control"
-                                                    name="password" placeholder="Ketikkan Password"
-                                                    value="{{ isset($user) ? $user->password : old('password') }}"
-                                                    required>
+                                                    name="password" placeholder="Ketikkan Password" value="" {{
+                                                    isset($user) ? '' : 'required' }}>
                                             </div>
                                         </div>
-                                        @endif
+                                        {{-- @endif --}}
                                     </div>
-                                    {{-- @if(isset($user)) --}}
                                     <div class="col-12">
                                         <div class="form-group">
                                             <label for="no-telepon">No. Telepon</label>
@@ -81,11 +79,6 @@
                                                     }}
                                                 </option>
                                                 @endforeach
-                                                {{-- {{ dd($user) }} --}}
-                                                {{-- <option value="1" {{ isset($user) ? ($user->role ==
-                                                    'Admin' ? 'selected' : '') : '' }}>Admin</option>
-                                                <option value="2" {{ isset($user) ? ($user->role == 'Siswa' ?
-                                                    'selected' : '') : '' }}>Tata Usaha</option> --}}
                                             </select>
                                         </div>
                                     </div>
@@ -104,3 +97,10 @@
         </div>
     </section>
 </x-app-layout>
+<script>
+    $(document).ready(function(){
+    $('#first-name-vertical').keyup(function(){
+        $(this).val($(this).val().toUpperCase());
+    });
+});
+</script>
