@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'SMK Pelita Persada') }}</title>
 
     <!-- Styles -->
     @include('layouts.partials.styles')
@@ -20,7 +20,6 @@
         <div id="main" class='layout-navbar'>
             @include('layouts.partials.header')
             <div id="main-content">
-
                 <div class="page-heading">
                     <div class="page-title">
                         {{ $header }}
@@ -35,7 +34,7 @@
 
     <!-- Scripts -->
     @include('layouts.partials.scripts')
-    @include('sweetalert::alert')
+    {{-- @include('sweetalert::alert') --}}
 
 
 
