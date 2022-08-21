@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Jurusan;
-use App\Models\Pelajar;
-use App\Models\Role;
 use App\Models\Spp;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -19,10 +17,9 @@ class PelajarController extends Controller
      */
     public function index(Request $request)
     {
-        // $role = Role::all();
         $spp = Spp::all();
         $jurusan = Jurusan::all();
-        $pelajar = User::where('role_id', 3)->orderBy('id', 'DESC')->paginate(10);
+        $pelajar = User::where('role_id', 3)->orderBy('id', 'DESC')->get();
         return view('pelajar.index', ['pelajar' => $pelajar, 'jurusan' => $jurusan, 'spp' => $spp])->with('i', ($request->input('page', 1) - 1) * 5);
     }
 
@@ -46,6 +43,13 @@ class PelajarController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required|max:255|unique:users,name',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:8',
+            'no_telp' => 'unique:users',
+        ]);
+
         $new_pelajar = new User;
         $new_pelajar->name = $request->get('name');
         $new_pelajar->email = $request->get('email');
@@ -55,7 +59,7 @@ class PelajarController extends Controller
         $new_pelajar->kelas_id = $request->get('kelas');
         $new_pelajar->jurusan_id = $request->get('jurusan');
         $new_pelajar->save();
-        return redirect()->route('pelajar.index')->with('toast_success', 'Pelajar succesfully created');
+        return redirect()->route('pelajar.index')->with('success', 'Pelajar berhasil ditambahkan');
     }
 
     /**
@@ -81,7 +85,6 @@ class PelajarController extends Controller
     {
         $spp = Spp::all();
         $jurusan = Jurusan::all();
-        // $role = Role::all();
         return view('pelajar.form', ['user' => $user, 'spp' => $spp, 'jurusan' => $jurusan]);
     }
 
@@ -96,17 +99,27 @@ class PelajarController extends Controller
     {
         $pelajar = User::findOrFail($id);
 
+        $request->validate([
+            'name' => 'required|max:255|unique:users,name,' . $pelajar->id,
+            'email' => 'required|email|unique:users,email,' . $pelajar->id,
+            'password' => 'nullable|min:8',
+            'no_telp' => 'unique:users,no_telp,' . $pelajar->id,
+        ]);
+
         $pelajar->name = $request->get('name');
         $pelajar->email = $request->get('email');
-        $pelajar->password = Hash::make($request->get('password'));
+        if ($request->password != null) {
+            $pelajar->password = Hash::make($request->get('password'));
+        } else {
+            $pelajar->password = $request->except('password');
+        };
         $pelajar->no_telp = $request->get('no_telp');
-        // $pelajar->role_id = $request->get('role');
         $pelajar->kelas_id = $request->get('kelas');
         $pelajar->jurusan_id = $request->get('jurusan');
         $pelajar->is_active = $request->get('is_active');
 
         $pelajar->save();
-        return redirect()->route('pelajar.index')->with('toast_success', 'Pelajar succesfully updated');
+        return redirect()->route('pelajar.index')->with('success', 'Pelajar berhasil diperbarui');
     }
 
     /**
@@ -119,6 +132,6 @@ class PelajarController extends Controller
     {
         User::find($user)->delete();
         return redirect()->route('pelajar.index')
-            ->with('toast_success', 'Pelajar deleted successfully');
+            ->with('success', 'Pelajar berhasil dihapus');
     }
 }

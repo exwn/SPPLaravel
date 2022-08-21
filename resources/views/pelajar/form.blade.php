@@ -24,6 +24,7 @@
                             "Tambahkan Pelajar") }}</h4>
                     </div>
                     <div class="card-content">
+                        @include('flash-message')
                         <div class="card-body">
                             <form
                                 action="{{ (isset($user) ? route('pelajar.update', $user->id) : route('pelajar.create')) }}"
@@ -53,7 +54,8 @@
                                             <div class="form-group">
                                                 <label for="password-vertical">Password</label>
                                                 <input type="password" id="password-vertical" class="form-control"
-                                                    name="password" placeholder="Ketikkan Password" value="" required>
+                                                    name="password" placeholder="Ketikkan Password" value="" {{
+                                                    isset($user) ? '' : 'required' }}>
                                             </div>
                                         </div>
 
@@ -125,3 +127,10 @@
         </div>
     </section>
 </x-app-layout>
+<script>
+    $(document).ready(function(){
+    $('#first-name-vertical').keyup(function(){
+        $(this).val($(this).val().toUpperCase());
+    });
+});
+</script>
