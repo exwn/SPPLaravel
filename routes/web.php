@@ -45,7 +45,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
         Route::post('jurusan/{jurusan}/hapus', [App\Http\Controllers\JurusanController::class, 'destroy'])->name('jurusan.destroy');
     });
 
-    Route::group(['middleware' => ['role:2']], function () {
+    Route::group(['middleware' => ['role:1,2']], function () {
         //Manajemen Pelajar
         Route::get('pelajar', [App\Http\Controllers\PelajarController::class, 'index'])->name('pelajar.index');
         Route::get('tambah-pelajar', [App\Http\Controllers\PelajarController::class, 'create'])->name('pelajar.create');
@@ -67,6 +67,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
         Route::get('transaksi', [App\Http\Controllers\TransaksiController::class, 'index'])->name('transaksi.index');
         Route::get('tambah-transaksi', [App\Http\Controllers\TransaksiController::class, 'create'])->name('transaksi.create');
         Route::post('tambah-transaksi', [App\Http\Controllers\TransaksiController::class, 'store'])->name('transaksi.store');
+        // Route::post('tambah-transaksi', [App\Http\Controllers\TransaksiController::class, 'adminStore'])->name('transaksi.admin.store');
         Route::get('pelajar/{transaksi}/detail', [App\Http\Controllers\TransaksiController::class, 'show'])->name('transaksi.show');
         Route::get('transaksi/{transaksi}/ubah', [App\Http\Controllers\TransaksiController::class, 'edit'])->name('transaksi.edit');
         Route::post('transaksi/{transaksi}/ubah', [App\Http\Controllers\TransaksiController::class, 'update'])->name('transaksi.update');

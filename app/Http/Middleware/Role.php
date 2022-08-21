@@ -16,7 +16,7 @@ class Role
      */
     public function handle(Request $request, Closure $next, ...$role)
     {
-        if ($request->user()->role()->where('id', '=', $role)->exists()) {
+        if (in_array($request->user()->role_id, $role)) {
             return $next($request);
         };
         abort(403);
