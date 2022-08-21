@@ -36,11 +36,7 @@
                         <div class="card-body">
                             <a href="{{ route('spp.create') }}" class="btn btn-outline-primary">Tambahkan SPP</a>
                         </div>
-                        @if(session('status'))
-                        <div class="alert alert-success">
-                            {{session('status')}}
-                        </div>
-                        @endif
+                        @include('flash-message')
 
                         <!-- table hover -->
                         <div class="table-responsive">
@@ -59,20 +55,20 @@
 
                                     @foreach ($spp as $index => $item)
                                     <tr>
-                                        <td>{{ $index+1 }}</td>
+                                        <td class="text-muted">{{ $index+1 }}</td>
                                         <td>{{ $item->tahun_ajaran }}/{{ $item->tahun_ajaran+1 }}</td>
                                         <td>{{ $item->kelas }}</td>
-                                        <td>{{ $item->total_tagihan }}</td>
+                                        <td>Rp. {{ format_idr($item->total_tagihan) }}</td>
                                         <td class="text-center">
                                             <a class="icon" href="{{ route('spp.edit', $item->id) }}"
                                                 title="edit item"><i data-feather='edit'></i>
                                             </a>
-                                            {!! Form::open(['method' => 'POST','route' => ['spp.destroy',
+                                            {{-- {!! Form::open(['method' => 'POST','route' => ['spp.destroy',
                                             $item->id],'style'=>'display:inline']) !!}
                                             {!! Form::button('<i data-feather="trash-2"></i>', [ 'type'
                                             => 'submit', 'class' => 'btn-link'])
                                             !!}
-                                            {!! Form::close() !!}
+                                            {!! Form::close() !!} --}}
                                         </td>
 
                                     </tr>
@@ -87,3 +83,29 @@
         </div>
     </section>
 </x-app-layout>
+<script>
+    $('.btn-link').on('click', function (event) {
+        event.preventDefault();
+        var form =  $(this).closest("form");
+        Swal.fire({
+        title: 'Anda yakin ingin menghapus?',
+        text: 'SPP yang dihapus tidak dapat dikembalikan',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yaa, hapus SPP!',
+        cancelButtonText: 'Batal',
+        }).then((result) => {
+            setTimeout(() => {
+
+                if (result.isConfirmed) {
+                    form.submit();
+                    Swal.fire(
+                        'Terhapus!',
+                        'SPP sudah terhapus.',
+                        'success'
+                        )
+                }
+            }, 1500);
+        })
+    });
+</script>
