@@ -34,6 +34,7 @@
                     </div>
                     <div class="card-content">
                         <div class="card-body">
+                            @include('flash-message')
 
                             <form action="{{ route('transaksi.create') }}" method="POST" class="card"
                                 enctype="multipart/form-data">
@@ -46,7 +47,6 @@
                                                 <select class="form-select" id="nama" name="nama">
                                                     <option disabled hidden selected>-- Pilih Nama Pelajar --</option>
                                                     @foreach ($user as $index => $item)
-                                                    {{-- {{ dd($item->name) }} --}}
                                                     <option value="{{ $item->id }}">{{ $item->name }}
                                                     </option>
                                                     @endforeach
@@ -70,7 +70,7 @@
                                             <div class="form-group">
                                                 <label for="email-id-vertical">Jurusan</label>
                                                 <input type="email" id="jurusan" class="form-control" name="email"
-                                                    placeholder="Ini Jurusan" disabled value="" required>
+                                                    placeholder="Ini Jurusan" disabled value="">
                                             </div>
                                         </div>
                                         <div class="col-12">
@@ -82,6 +82,7 @@
                                                         $i)); $label=date('F', $time); $value=date('F', $time);
                                                         echo "<option value='$value'>$label</option>" ; } @endphp
                                                         </select>
+
                                             </div>
                                         </div>
 
@@ -89,7 +90,7 @@
                                             <div class="form-group">
                                                 <label for="no-telepon">Jumlah Tagihan</label>
                                                 <input type="number" id="tagihan" class="form-control" name="tagihan"
-                                                    placeholder="Ini Tagihan" value="" required disabled>
+                                                    placeholder="Ini Tagihan" value="" disabled>
                                             </div>
                                         </div>
                                         <div class="col-12">
@@ -133,24 +134,25 @@
                     <div class="card-body">
                         <a href="{{ route('transaksi.print') }}" class="btn btn-outline-primary">Print Transaksi</a>
                     </div>
+                    {{-- @include('flash-message') --}}
                     <!-- table hover -->
-                    <div class="table-responsive">
-                        <table class="table table-striped" id="table1" style="white-space:nowrap;">
+                    <div class="table-responsive mx-4 mb-4">
+                        <table class="table table-hover" id="table1">
                             <thead>
                                 <tr>
                                     <th>No.</th>
                                     <th>Tahun Ajaran</th>
+                                    <th>Tanggal Bayar</th>
                                     <th>Bulan</th>
                                     <th>Nama Pelajar</th>
                                     <th>Kelas</th>
-                                    <th>Jumlah Tagihan</th>
+                                    {{-- <th>Jumlah Tagihan</th> --}}
                                     <th>Jumlah Dibayarkan</th>
-                                    <th>Tunggakan</th>
-                                    <th>Bukti Pembayaran</th>
-                                    <th>Tanggal Bayar</th>
-                                    <th>Keterangan</th>
+                                    {{-- <th>Tunggakan</th> --}}
                                     <th>Status</th>
-                                    <th>Bertanggung Jawab</th>
+                                    <th>Bukti Pembayaran</th>
+                                    {{-- <th>Keterangan</th> --}}
+                                    {{-- <th>Bertanggung Jawab</th> --}}
                                     {{-- <th>Action</th> --}}
                                 </tr>
                             </thead>
@@ -160,67 +162,118 @@
                                 @foreach ($transaksi as $index => $item)
                                 <tr>
 
-                                    <td>{{ $index+1 }}</td>
+                                    <td class="text-muted">{{ $index+1 }}</td>
                                     <td>{{ $item->spp->tahun_ajaran }}/{{ $item->spp->tahun_ajaran+1 }}</td>
+                                    <td>{{ $item->created_at->format('d-m-Y') }}</td>
                                     <td>{{ $item->bulan }}</td>
                                     <td>{{ $item->user->name }}</td>
                                     <td>{{ $item->spp->kelas }}</td>
-                                    <td>{{ $item->spp->total_tagihan }}</td>
-                                    <td>{{ $item->jumlah_dibayarkan }}</td>
-                                    <td>{{ $item->tunggakan }}</td>
+                                    {{-- <td>{{ $item->spp->total_tagihan }}</td> --}}
+                                    <td>IDR. {{ format_idr($item->jumlah_dibayarkan) }}
+                                    </td>
+                                    {{-- <td>
+                                        @if ($item->tunggakan == 0)
+                                        -
+                                        @elseif($item->tunggakan > 0)
+                                        {{ $item->tunggakan }}
+                                        @endif
+                                    </td> --}}
+
                                     <td>
-                                        {{-- {{ $item->bukti_pembayaran }} --}}
-                                        {{-- <img src="{{ asset('bukti_pembayaran/'.$item->bukti_pembayaran) }}"
-                                            style="height: 100px; width: 150px;"> --}}
-                                        <div class="me-1 mb-1 d-inline-block">
-                                            <!-- Button trigger for small size modal modal -->
-                                            <button type="button" class="btn btn-outline-primary block"
-                                                data-bs-toggle="modal" data-bs-target="#small-{{ $item->id }}">
-                                                Lihat Bukti
-                                            </button>
+                                        @if ($item->status == 1)
+                                        <span class="badge bg-light-success">Lunas</span>
+                                        @elseif($item->status == 2)
+                                        <span class="badge bg-light-warning">Proses</span>
+                                        @elseif($item->status == 0)
+                                        <span class="badge bg-light-danger">Belum Lunas</span>
+                                        @endif
+                                        {{-- {{ $item->status }} --}}
+                                    </td>
+                                    <td>
+                                        <!-- Button trigger modal -->
+                                        <button type="button" class="btn btn-outline-primary block btn-sm"
+                                            data-bs-toggle="modal" data-bs-target="#staticBackdrop-{{ $item->id }}"
+                                            data-id="{{ $item->id }}">
+                                            Lihat Bukti
+                                        </button>
 
-                                            <!--small size modal -->
-                                            <div class="modal fade text-left" id="small-{{ $item->id }}" tabindex="-1"
-                                                role="dialog" aria-labelledby="myModalLabel19" aria-hidden="true">
-                                                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-sm"
-                                                    role="document">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h4 class="modal-title" id="myModalLabel19">Small Modal</h4>
-                                                            <button type="button" class="close" data-bs-dismiss="modal"
-                                                                aria-label="Close">
-                                                                <i data-feather="x"></i>
-                                                            </button>
-                                                        </div>
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="staticBackdrop-{{ $item->id }}"
+                                            data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                                            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                            <div
+                                                class="modal-dialog modal-dialog-centered modal-dialog-scrollable  modal-sm">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="staticBackdropLabel">Modal title
+                                                        </h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+
+                                                    <div class="modal-body">
+                                                        <img src="{{ asset('bukti_pembayaran/'.$item->bukti_pembayaran) }}"
+                                                            class="img-fluid" data-id="{{ $item->id }}" />
+                                                    </div>
+                                                    <form action="/transaksi/{{$item->id}}/ubah" method="POST">
                                                         <div class="modal-body">
+                                                            <div class="mb-3">
+                                                                <div>Total Tagihan : Rp. {{
+                                                                    format_idr($item->spp->total_tagihan) }}
+                                                                </div>
+                                                                <div>Jumlah Dibayarkan : Rp. {{
+                                                                    format_idr($item->jumlah_dibayarkan) }}
+                                                                </div>
+                                                                @if ($item->tunggakan == 0)
+                                                                <div>Tunggakan : <span
+                                                                        class="badge bg-light-success">Lunas</span>
+                                                                </div>
+                                                                @else
+                                                                <div>Tunggakan : {{ $item->tunggakan }}</div>
+                                                                @endif
+                                                                @csrf
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio"
+                                                                        name="lunas" id="flexRadioDefault1" value="1">
+                                                                    <label class="form-check-label"
+                                                                        for="flexRadioDefault1">
+                                                                        Lunas
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio"
+                                                                        name="lunas" id="flexRadioDefault2" value="2">
+                                                                    <label class="form-check-label"
+                                                                        for="flexRadioDefault2">
+                                                                        Belum Lunas
+                                                                    </label>
+                                                                </div>
 
-
-                                                            <img src="{{ asset('bukti_pembayaran/'.$item->bukti_pembayaran) }}"
-                                                                class="img-fluid" data-id="{{ $item->id }}" />
-
+                                                                <div class="form-floating">
+                                                                    <textarea class="form-control"
+                                                                        placeholder="Leave a comment here"
+                                                                        id="floatingTextarea"
+                                                                        name="keterangan"></textarea>
+                                                                    <label for="floatingTextarea">Keterangan</label>
+                                                                </div>
+                                                            </div>
+                                                            {{-- <button type="submit"
+                                                                class="btn btn-primary">Submit</button> --}}
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <button type="button" class="btn btn-light-secondary btn-sm"
-                                                                data-bs-dismiss="modal">
-                                                                <i class="bx bx-x d-block d-sm-none"></i>
-                                                                <span class="d-sm-block d-none">Close</span>
-                                                            </button>
-                                                            <button type="button" class="btn btn-primary ml-1 btn-sm"
-                                                                data-bs-dismiss="modal">
-                                                                <i class="bx bx-check d-block d-sm-none"></i>
-                                                                <span class="d-sm-block d-none">Accept</span>
-                                                            </button>
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Close</button>
+                                                            <button type="submit"
+                                                                class="btn btn-primary">Confirm</button>
                                                         </div>
-                                                    </div>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td>{{ $item->created_at->format('d-m-Y') }}</td>
-                                    <td>{{ $item->keterangan }}</td>
-                                    <td>{{ $item->status }}</td>
+                                    {{-- <td>{{ $item->keterangan }}</td> --}}
                                     {{-- <td>{{ $item->user->name }}</td> --}}
-                                    <td></td>
+                                    {{-- <td></td> --}}
 
                                 </tr>
 
@@ -242,7 +295,7 @@
     $(document).ready(function() {
       $('#nama').change(function() {
            var nama = $(event.target).val();
-           console.log(nama);
+        //    console.log(nama);
             $.ajax({
                 type: 'GET',
               url: "{{ route('transaksi.show', ':id') }}".replace(':id', nama),
@@ -257,7 +310,7 @@
                   $('#jumlah_dibayarkan').val(response.spp_tagihan);
                   $('#jumlah_dibayarkan').attr('max', response.spp_tagihan);
 
-                console.log(response.spp_tagihan);
+                // console.log(response.spp_tagihan);
                 },
                 error: (err => {
                     console.log(err);
@@ -268,4 +321,7 @@
         });
       });
     //   $('#image').filepond();
+    $(document).ready(function () {
+    $('#table1').DataTable();
+    });
 </script>

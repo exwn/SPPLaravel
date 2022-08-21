@@ -154,9 +154,9 @@
                                     <th>Tunggakan</th>
                                     <th>Bukti Pembayaran</th>
                                     <th>Tanggal Bayar</th>
-                                    <th>Keterangan</th>
                                     <th>Status</th>
-                                    <th>Bertanggung Jawab</th>
+                                    <th>Keterangan</th>
+                                    {{-- <th>Bertanggung Jawab</th> --}}
                                     {{-- <th>Action</th> --}}
                                 </tr>
                             </thead>
@@ -173,7 +173,13 @@
                                     <td>{{ $item->spp->kelas }}</td>
                                     <td>{{ $item->spp->total_tagihan }}</td>
                                     <td>{{ $item->jumlah_dibayarkan }}</td>
-                                    <td>{{ $item->tunggakan }}</td>
+                                    <td>
+                                        @if ($item->tunggakan == 0)
+                                        -
+                                        @elseif($item->tunggakan > 0)
+                                        {{ $item->tunggakan }}
+                                        @endif
+                                    </td>
                                     <td>
                                         {{-- {{ $item->bukti_pembayaran }} --}}
                                         {{-- <img src="{{ asset('bukti_pembayaran/'.$item->bukti_pembayaran) }}"
@@ -223,8 +229,17 @@
                                         </div>
                                     </td>
                                     <td>{{ $item->created_at->format('d-m-Y') }}</td>
+                                    <td>
+                                        @if ($item->status == 1)
+                                        <span class="badge bg-light-success">Lunas</span>
+                                        @elseif($item->status == 2)
+                                        <span class="badge bg-light-warning">Proses</span>
+                                        @elseif($item->status == 0)
+                                        <span class="badge bg-light-danger">Belum Lunas</span>
+                                        @endif
+                                        {{-- {{ $item->status }} --}}
+                                    </td>
                                     <td>{{ $item->keterangan }}</td>
-                                    <td>{{ $item->status }}</td>
                                     {{-- <td>{{ $item->user->name }}</td> --}}
                                     <td></td>
 

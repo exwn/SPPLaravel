@@ -23,7 +23,7 @@ class TransaksiController extends Controller
     {
         $spp = Spp::all();
         $user = User::where('role_id', 3)->get();
-        $transaksi = Transaksi::orderBy('id', 'DESC')->paginate(100);
+        $transaksi = Transaksi::orderBy('id', 'DESC')->get();
         return view('transaksi.admin.index', ['transaksi' => $transaksi, 'spp' => $spp, 'user' => $user])->with('i', ($request->input('page', 1) - 1) * 5);
     }
     public function pelajarIndex(Request $request)
@@ -58,6 +58,12 @@ class TransaksiController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            // 'name' => 'required',
+            'jumlah_dibayarkan' => 'required',
+            'bukti_pembayaran' => 'required|mimes:jpg,png,jpeg|max:2048',
+        ]);
+
         $new_transaksi = new Transaksi;
         $new_transaksi->users_id = $request->get('nama');
         $new_transaksi->spp_id = $request->get('kelas');
@@ -72,11 +78,15 @@ class TransaksiController extends Controller
             $new_transaksi->bukti_pembayaran = $filename;
         };
         $new_transaksi->save();
-        return redirect()->route('transaksi.index')->with('toast_success', 'Transaksi succesfully created');
-        // return dd($request->all());
+        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil ditambahkan');
     }
     public function pelajarStore(Request $request)
     {
+        $request->validate([
+            'jumlah_dibayarkan' => 'required',
+            'bukti_pembayaran' => 'required|mimes:jpg,png,jpeg|max:2048',
+        ]);
+
         $new_transaksi = new Transaksi;
         $new_transaksi->users_id = $request->get('nama');
         $new_transaksi->spp_id = $request->get('kelas');
@@ -91,7 +101,7 @@ class TransaksiController extends Controller
             $new_transaksi->bukti_pembayaran = $filename;
         };
         $new_transaksi->save();
-        return redirect()->route('transaksi.pelajar.index')->with('toast_success', 'Transaksi succesfully created');
+        return redirect()->route('transaksi.pelajar.index')->with('success', 'Terimakasih telah membayar SPP');
         // return dd($request->all());
     }
 
@@ -128,10 +138,15 @@ class TransaksiController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'lunas' => 'required',
+        ]);
+
         $transaksi = Transaksi::findOrFail($id);
-        $transaksi->jumlah = $request->get('jumlah');
+        $transaksi->status = $request->get('lunas');
+        $transaksi->keterangan = $request->get('keterangan');
         $transaksi->save();
-        return redirect()->route('transaksi.index')->with('toast_success', 'Transaksi succesfully updated');
+        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil diperbarui');
     }
 
     /**
@@ -145,7 +160,7 @@ class TransaksiController extends Controller
         $transaksi_destroy = Transaksi::findOrFail($id);
         $transaksi_destroy->delete();
         return redirect()->route('transaksi.index')
-            ->with('toast_success', 'Transaksi deleted successfully');
+            ->with('success', 'Transaksi berhasil dihapus');
     }
 
     public function print_pdf()
@@ -155,17 +170,10 @@ class TransaksiController extends Controller
         $transaksi = Transaksi::all();
         $pdf = PDF::loadview('transaksi.admin.print_pdf', ['transaksi' => $transaksi, 'spp' => $spp, 'user' => $user])->setPaper('a4', 'landscape');
         return $pdf->download('laporan-transaksi.pdf');
-        // return $pdf->stream();
-
-        // $pdf = App::make('dompdf.wrapper');
-        // $pdf->loadHTML('<h1>Test</h1>');
-        // return $pdf->stream();
     }
     public function pelajar_pdf()
     {
         $user = Auth::user();
-        // $spp = Spp::where('id', Auth::user()->kelas_id)->get();
-        // $user = User::where('role_id', 3)->get();
         $transaksi = Transaksi::where('users_id', Auth::user()->id)->get();
         $pdf = PDF::loadview('transaksi.admin.print_pdf', ['transaksi' => $transaksi, 'user' => $user])->setPaper('a4', 'landscape');
         return $pdf->download('laporan-transaksi.pdf');
