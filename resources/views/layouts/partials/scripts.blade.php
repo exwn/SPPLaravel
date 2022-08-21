@@ -5,7 +5,11 @@
 
 
 <script src="{{ asset('/js/bootstrap.bundle.min.js') }}"></script>
-
+<script>
+    $(".alert").fadeTo(10000, 500).slideUp(500, function(){
+    $(".alert").slideUp(500);
+});
+</script>
 
 @livewireScripts
 <script src="{{ asset('/js/main.js') }}"></script>
